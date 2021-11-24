@@ -5,6 +5,8 @@ const albumSchema = new mongoose.Schema({
   title: String,
   year: Number,
   cover: String,
+}, {
+  versionKey: false,
 })
 
 const albumModel = mongoose.model('albums', albumSchema)

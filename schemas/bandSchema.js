@@ -1,10 +1,19 @@
 const mongoose = require('mongoose')
 
 const bandSchema = new mongoose.Schema({
-  title: String,
-  origin: String,
-  description: String,
-  albums: Array
+  title: {
+    type: String,
+    required: true,
+  },
+  origin: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+  },
+}, {
+  versionKey: false,
 })
 
 const bandModel = mongoose.model('bands', bandSchema)

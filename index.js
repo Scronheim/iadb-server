@@ -31,15 +31,59 @@ app.use(cors())
 app.use(fileUpload({ createParentPath: true }))
 
 router.get('/api', async (req, res) => {
-  const response = await bandModel.aggregate([
-    {$lookup: {
-      from: 'albums',
-      localField: '_id',
-      foreignField: 'bandId',
-      as: 'albums'
-    }}
-  ])
-  jsonResponse(res, response)
+  if (req.query.band) {
+    const regex = new RegExp(["^", req.query.band, "$"].join(""), "i")
+    const response = await bandModel.aggregate([
+      {
+        $match: {
+          title: regex
+        }
+      },
+      {
+        $lookup: {
+          from: 'albums',
+          localField: '_id',
+          foreignField: 'bandId',
+          as: 'albums'
+        }
+      }
+    ])
+    jsonResponse(res, response)
+  } else if (req.query.album) {
+    const regex = new RegExp(["^", req.query.album, "$"].join(""), "i")
+    const response = await albumModel.aggregate([
+      {
+        $match: {
+          title: regex
+        }
+      },
+      {
+        $lookup: {
+          from: 'bands',
+          localField: 'bandId',
+          foreignField: '_id',
+          as: 'band'
+        }
+      }
+    ])
+    jsonResponse(res, response)
+  } else {
+    jsonResponse(res)
+  }
+})
+
+router.post('/api/band', (req, res) => {
+  bandModel.create(req.body, function (err, response) {
+    if (err) jsonResponse(res, null, err.errors, false)
+    jsonResponse(res, response)
+  })
+})
+
+router.post('/api/album', (req, res) => {
+  albumModel.create(req.body, function (err, response) {
+    if (err) jsonResponse(res, null, err.errors, false)
+    jsonResponse(res, response)
+  })
 })
 
 app.use(router)
