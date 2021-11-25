@@ -3,6 +3,7 @@ const {jsonResponse} = require('../utils')
 const express = require('express')
 const mongoose = require("mongoose")
 const labelModel = require("../schemas/labelSchema")
+const albumModel = require("../schemas/albumSchema");
 const router = new express.Router()
 
 router.get('/api/label/id/:id', async (req, res) => {
@@ -25,11 +26,29 @@ router.get('/api/label/id/:id', async (req, res) => {
   jsonResponse(res, response[0])
 })
 
-router.post('/api/label', (req, res) => {
-  labelModel.create(req.body, function (err, response) {
-    if (err) jsonResponse(res, null, err.errors, false)
-    jsonResponse(res, response)
+router.route('/api/label')
+  .get(async (req, res) => {
+    if (req.query.search) {
+      const response = await labelModel.aggregate([
+        {$match: {
+            title: {$regex: `^${req.query.search}`, $options: 'i'}
+          }},
+      ])
+      jsonResponse(res, response)
+    } else {
+      jsonResponse(res)
+    }
   })
-})
+  .post((req, res) => {
+    labelModel.create(req.body, function (err, response) {
+      if (err) jsonResponse(res, null, err.errors, false)
+      jsonResponse(res, response)
+    })
+  })
+  .patch((req, res) => {
+    labelModel.findOneAndUpdate({_id: req.body._id}, req.body).then((response) => {
+      jsonResponse(res, response)
+    })
+  })
 
 module.exports = router

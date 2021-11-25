@@ -9,7 +9,8 @@ const labelSchema = new mongoose.Schema({
   styles: String,
   site: String,
   foundingDate: Number,
-  parentLabel: mongoose.SchemaTypes.ObjectId
+  parentLabel: mongoose.SchemaTypes.ObjectId,
+  logo: String,
 }, {
   versionKey: false,
 })

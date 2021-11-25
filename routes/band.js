@@ -56,11 +56,18 @@ router.get('/api/band/id/:id', async (req, res) => {
   jsonResponse(res, response[0])
 })
 
-router.post('/api/band', (req, res) => {
-  bandModel.create(req.body, function (err, response) {
-    if (err) jsonResponse(res, null, err.errors, false)
-    jsonResponse(res, response)
+router.route('/api/band')
+  .get(async (req, res) => {
+    if (req.query.search) {
+      const response = await bandModel.find({title: {$regex: req.query.search, $options: 'i'}})
+      jsonResponse(res, response)
+    }
   })
-})
+  .post((req, res) => {
+    bandModel.create(req.body, function (err, response) {
+      if (err) jsonResponse(res, null, err.errors, false)
+      jsonResponse(res, response)
+    })
+  })
 
 module.exports = router

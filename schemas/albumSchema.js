@@ -5,6 +5,13 @@ const albumSchema = new mongoose.Schema({
   title: String,
   year: Number,
   cover: String,
+  type: String,
+  label: mongoose.SchemaTypes.ObjectId,
+  releaseDate: {
+    type: mongoose.SchemaTypes.Date,
+  },
+  trackList: Array,
+  rating: Number
 }, {
   versionKey: false,
 })
