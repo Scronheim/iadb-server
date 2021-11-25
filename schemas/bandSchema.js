@@ -23,6 +23,16 @@ const bandSchema = new mongoose.Schema({
   },
   photo: {
     type: String,
+  },
+  status: {
+    type: String,
+    required: true,
+  },
+  tags: {
+    type: Array,
+  },
+  country: {
+    type: mongoose.SchemaTypes.ObjectId,
   }
 }, {
   versionKey: false,

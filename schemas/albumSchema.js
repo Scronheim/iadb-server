@@ -3,7 +3,6 @@ const mongoose = require('mongoose')
 const albumSchema = new mongoose.Schema({
   bandId: mongoose.SchemaTypes.ObjectId,
   title: String,
-  year: Number,
   cover: String,
   type: String,
   label: mongoose.SchemaTypes.ObjectId,
