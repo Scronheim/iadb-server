@@ -3,7 +3,6 @@ const {jsonResponse} = require('../utils')
 const express = require('express')
 const mongoose = require("mongoose")
 const labelModel = require("../schemas/labelSchema")
-const albumModel = require("../schemas/albumSchema");
 const router = new express.Router()
 
 router.get('/api/label/id/:id', async (req, res) => {

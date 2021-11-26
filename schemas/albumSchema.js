@@ -15,6 +15,6 @@ const albumSchema = new mongoose.Schema({
   versionKey: false,
 })
 
-const albumModel = mongoose.model('albums', albumSchema)
+const albumModel = mongoose.model('albums', albumSchema, 'albums')
 
 module.exports = albumModel

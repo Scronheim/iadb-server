@@ -31,13 +31,14 @@ const bandSchema = new mongoose.Schema({
   tags: {
     type: Array,
   },
-  country: {
+  countryId: {
     type: mongoose.SchemaTypes.ObjectId,
-  }
+  },
+  officialSire: String,
 }, {
   versionKey: false,
 })
 
-const bandModel = mongoose.model('bands', bandSchema)
+const bandModel = mongoose.model('bands', bandSchema, 'bands')
 
 module.exports = bandModel

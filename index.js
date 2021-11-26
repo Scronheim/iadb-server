@@ -26,6 +26,8 @@ app.use(fileUpload({ createParentPath: true }))
 router.use(require('./routes/band'))
 router.use(require('./routes/album'))
 router.use(require('./routes/label'))
+router.use(require('./routes/country'))
+router.use(require('./routes/people'))
 
 
 app.use(router)

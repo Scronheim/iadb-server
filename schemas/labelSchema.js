@@ -15,6 +15,6 @@ const labelSchema = new mongoose.Schema({
   versionKey: false,
 })
 
-const labelModel = mongoose.model('labels', labelSchema)
+const labelModel = mongoose.model('labels', labelSchema, 'labels')
 
 module.exports = labelModel

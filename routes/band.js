@@ -1,8 +1,8 @@
 const {jsonResponse} = require('../utils')
 
 const express = require('express')
-const bandModel = require("../schemas/bandSchema");
-const mongoose = require("mongoose");
+const bandModel = require("../schemas/bandSchema")
+const mongoose = require("mongoose")
 const router = new express.Router()
 
 router.get('/api/band/name/:name', async (req, res) => {
@@ -50,7 +50,26 @@ router.get('/api/band/id/:id', async (req, res) => {
       }
     },
     {
+      $lookup: {
+        from: 'people',
+        localField: '_id',
+        foreignField: 'bandIds',
+        as: 'lineUp'
+      }
+    },
+    {
+      $lookup: {
+        from: 'countries',
+        localField: 'countryId',
+        foreignField: '_id',
+        as: 'country'
+      }
+    },
+    {
       $unwind: '$label'
+    },
+    {
+      $unwind: '$country'
     }
   ])
   jsonResponse(res, response[0])
@@ -66,6 +85,11 @@ router.route('/api/band')
   .post((req, res) => {
     bandModel.create(req.body, function (err, response) {
       if (err) jsonResponse(res, null, err.errors, false)
+      jsonResponse(res, response)
+    })
+  })
+  .patch((req, res) => {
+    bandModel.findOneAndUpdate({_id: req.body._id}, req.body).then((response) => {
       jsonResponse(res, response)
     })
   })
