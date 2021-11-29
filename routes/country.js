@@ -9,7 +9,7 @@ router.route('/api/country')
     if (req.query.search) {
       const response = await countryModel.aggregate([
         {$match: {
-            title: {$regex: `^${req.query.search}`, $options: 'i'}
+            name: {$regex: `^${req.query.search}`, $options: 'i'}
           }},
       ])
       jsonResponse(res, response)

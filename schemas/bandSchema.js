@@ -15,7 +15,7 @@ const bandSchema = new mongoose.Schema({
   description: {
     type: String,
   },
-  label: {
+  labelId: {
     type: mongoose.SchemaTypes.ObjectId,
   },
   logo: {
@@ -34,7 +34,7 @@ const bandSchema = new mongoose.Schema({
   countryId: {
     type: mongoose.SchemaTypes.ObjectId,
   },
-  officialSire: String,
+  officialSite: String,
 }, {
   versionKey: false,
 })

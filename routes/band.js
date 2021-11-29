@@ -3,6 +3,7 @@ const {jsonResponse} = require('../utils')
 const express = require('express')
 const bandModel = require("../schemas/bandSchema")
 const mongoose = require("mongoose")
+const albumModel = require("../schemas/albumSchema");
 const router = new express.Router()
 
 router.get('/api/band/name/:name', async (req, res) => {
@@ -44,7 +45,7 @@ router.get('/api/band/id/:id', async (req, res) => {
     {
       $lookup: {
         from: 'labels',
-        localField: 'label',
+        localField: 'labelId',
         foreignField: '_id',
         as: 'label'
       }
@@ -78,7 +79,22 @@ router.get('/api/band/id/:id', async (req, res) => {
 router.route('/api/band')
   .get(async (req, res) => {
     if (req.query.search) {
-      const response = await bandModel.find({title: {$regex: req.query.search, $options: 'i'}})
+      const response = await bandModel.aggregate([
+        {$match: {
+            title: {$regex: req.query.search, $options: 'i'}
+          }},
+        {
+          $lookup: {
+            from: 'countries',
+            localField: 'countryId',
+            foreignField: '_id',
+            as: 'country'
+          }
+        },
+        {
+          $unwind: '$country'
+        },
+      ])
       jsonResponse(res, response)
     }
   })

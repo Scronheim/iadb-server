@@ -27,7 +27,7 @@ router.get('/api/album/id/:id', async (req, res) => {
     {
       $lookup: {
         from: 'labels',
-        localField: 'label',
+        localField: 'labelId',
         foreignField: '_id',
         as: 'label'
       }

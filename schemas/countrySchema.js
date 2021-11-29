@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const countrySchema = new mongoose.Schema({
-  title: String,
+  name: String,
   code: String,
 }, {
   versionKey: false,
