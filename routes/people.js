@@ -1,9 +1,43 @@
 const {jsonResponse} = require('../utils')
 
 const express = require('express')
-const peopleModel = require("../schemas/peopleSchema")
-const bandModel = require("../schemas/bandSchema");
+const peopleModel = require('../schemas/peopleSchema')
+const albumModel = require('../schemas/albumSchema')
+const bandModel = require('../schemas/bandSchema')
+const mongoose = require("mongoose");
+
+const ObjectId = require('mongoose').Types.ObjectId
+
 const router = new express.Router()
+
+router.get('/api/person/id/:id', async (req, res) => {
+  const ObjectId = mongoose.Types.ObjectId
+  const response = await peopleModel.aggregate([
+    {
+      $match: {
+        _id: ObjectId(req.params.id)
+      }
+    },
+    {
+      $lookup: {
+        from: 'countries',
+        localField: 'countryId',
+        foreignField: '_id',
+        as: 'country'
+      }
+    },
+    {
+      $lookup: {
+        from: 'bands',
+        localField: '_id',
+        foreignField: 'lineUpIds',
+        as: 'bands'
+      }
+    },
+    {$unwind: '$country'}
+  ])
+  jsonResponse(res, response[0])
+})
 
 router.route('/api/people')
   .get(async (req, res) => {
@@ -28,19 +62,38 @@ router.route('/api/people')
 
 router.route('/api/people/band')
   .post((req, res) => {
-    peopleModel.findById(req.body.personId, function (err, person) {
-      person.bandIds.push(req.body.bandId)
-      person.save()
-      jsonResponse(res, person)
+    bandModel.findById(req.body.bandId, function (err, band) {
+      band.lineUpIds.push(ObjectId(req.body.personId))
+      band.save()
+      jsonResponse(res, band)
     })
   })
   .delete(async (req, res) => {
-    peopleModel.findById(req.body.personId, function (err, person) {
-      const index = person.bandIds.indexOf(req.body.bandId)
-      person.bandIds.splice(index, 1)
-      person.save()
-      jsonResponse(res, person)
+    bandModel.findById(req.body.bandId, function (err, band) {
+      const index = band.lineUpIds.indexOf(req.body.personId)
+      band.lineUpIds.splice(index, 1)
+      band.save()
+      jsonResponse(res, band)
     })
   })
+
+router.route('/api/people/album')
+  .post((req, res) => {
+    albumModel.findById(req.body.albumId, function (err, album) {
+      if (err) jsonResponse(res, null, err.errors, false)
+      album.lineUpIds.push(ObjectId(req.body.personId))
+      album.save()
+      jsonResponse(res, album)
+    })
+  })
+  .delete(async (req, res) => {
+    albumModel.findById(req.body.albumId, function (err, album) {
+      const index = album.lineUpIds.indexOf(req.body.personId)
+      album.lineUpIds.splice(index, 1)
+      album.save()
+      jsonResponse(res, album)
+    })
+  })
+
 
 module.exports = router

@@ -33,6 +33,14 @@ router.get('/api/album/id/:id', async (req, res) => {
       }
     },
     {
+      $lookup: {
+        from: 'people',
+        localField: 'lineUpIds',
+        foreignField: '_id',
+        as: 'lineUp'
+      }
+    },
+    {
       $unwind: '$label'
     },
   ])

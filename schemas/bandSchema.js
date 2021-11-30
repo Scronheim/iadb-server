@@ -34,7 +34,15 @@ const bandSchema = new mongoose.Schema({
   countryId: {
     type: mongoose.SchemaTypes.ObjectId,
   },
-  officialSite: String,
+  officialSite: {
+    type: String,
+  },
+  links: {
+    type: Array,
+  },
+  lineUpIds: {
+    type: Array,
+  }
 }, {
   versionKey: false,
 })

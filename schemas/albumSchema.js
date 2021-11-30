@@ -27,6 +27,12 @@ const albumSchema = new mongoose.Schema({
   },
   tags: {
     type: Array,
+  },
+  lineUpIds: {
+    type: Array,
+  },
+  catalogNumber: {
+    type: String,
   }
 }, {
   versionKey: false,

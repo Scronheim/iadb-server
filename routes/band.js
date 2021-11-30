@@ -53,8 +53,8 @@ router.get('/api/band/id/:id', async (req, res) => {
     {
       $lookup: {
         from: 'people',
-        localField: '_id',
-        foreignField: 'bandIds',
+        localField: 'lineUpIds',
+        foreignField: '_id',
         as: 'lineUp'
       }
     },

@@ -17,8 +17,25 @@ router.get('/api/label/id/:id', async (req, res) => {
       $lookup: {
         from: 'bands',
         localField: '_id',
-        foreignField: 'label',
+        foreignField: 'labelId',
         as: 'bands'
+      }
+    },
+    {
+      $lookup: {
+        from: 'albums',
+        localField: '_id',
+        foreignField: 'labelId',
+        pipeline: [
+          {$lookup: {
+              from: 'bands',
+              localField: 'bandId',
+              foreignField: '_id',
+              as: 'band'
+            }},
+          {$unwind: '$band'}
+        ],
+        as: 'albums'
       }
     },
   ])
