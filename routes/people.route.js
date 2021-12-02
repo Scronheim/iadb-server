@@ -1,17 +1,15 @@
 const {jsonResponse} = require('../utils')
 
 const express = require('express')
-const peopleModel = require('../schemas/peopleSchema')
-const albumModel = require('../schemas/albumSchema')
-const bandModel = require('../schemas/bandSchema')
-const mongoose = require("mongoose");
+const peopleModel = require('../models/people.model')
+const albumModel = require('../models/album.model')
+const bandModel = require('../models/band.model')
 
 const ObjectId = require('mongoose').Types.ObjectId
 
 const router = new express.Router()
 
 router.get('/api/person/id/:id', async (req, res) => {
-  const ObjectId = mongoose.Types.ObjectId
   const response = await peopleModel.aggregate([
     {
       $match: {

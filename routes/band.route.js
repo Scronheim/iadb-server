@@ -1,9 +1,8 @@
 const {jsonResponse} = require('../utils')
 
 const express = require('express')
-const bandModel = require("../schemas/bandSchema")
-const mongoose = require("mongoose")
-const albumModel = require("../schemas/albumSchema");
+const mongoose = require('mongoose')
+const bandModel = require('../models/band.model')
 const router = new express.Router()
 
 router.get('/api/band/name/:name', async (req, res) => {

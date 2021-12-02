@@ -22,9 +22,6 @@ const albumSchema = new mongoose.Schema({
   trackList: {
     type: Array,
   },
-  rating: {
-    type: Number,
-  },
   tags: {
     type: Array,
   },

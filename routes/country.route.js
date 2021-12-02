@@ -1,7 +1,7 @@
 const {jsonResponse} = require('../utils')
 
 const express = require('express')
-const countryModel = require("../schemas/countrySchema")
+const countryModel = require('../models/country.model')
 const router = new express.Router()
 
 router.route('/api/country')

@@ -1,8 +1,8 @@
 const {jsonResponse} = require('../utils')
 
 const express = require('express')
-const mongoose = require("mongoose")
-const labelModel = require("../schemas/labelSchema")
+const mongoose = require('mongoose')
+const labelModel = require('../models/label.model')
 const router = new express.Router()
 
 router.get('/api/label/id/:id', async (req, res) => {
