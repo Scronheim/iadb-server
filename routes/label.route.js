@@ -3,6 +3,7 @@ const {jsonResponse} = require('../utils')
 const express = require('express')
 const mongoose = require('mongoose')
 const labelModel = require('../models/label.model')
+const {authJwt} = require('../middlewares')
 const router = new express.Router()
 
 router.get('/api/label/id/:id', async (req, res) => {
@@ -55,13 +56,13 @@ router.route('/api/label')
       jsonResponse(res)
     }
   })
-  .post((req, res) => {
+  .post([authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
     labelModel.create(req.body, function (err, response) {
       if (err) jsonResponse(res, null, err.errors, false)
       jsonResponse(res, response)
     })
   })
-  .patch((req, res) => {
+  .patch([authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
     labelModel.findOneAndUpdate({_id: req.body._id}, req.body).then((response) => {
       jsonResponse(res, response)
     })

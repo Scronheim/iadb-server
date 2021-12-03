@@ -4,6 +4,7 @@ const express = require('express')
 const peopleModel = require('../models/people.model')
 const albumModel = require('../models/album.model')
 const bandModel = require('../models/band.model')
+const {authJwt} = require('../middlewares')
 
 const ObjectId = require('mongoose').Types.ObjectId
 
@@ -46,27 +47,27 @@ router.route('/api/people')
       jsonResponse(res)
     }
   })
-  .post((req, res) => {
+  .post([authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
     peopleModel.create(req.body, function (err, response) {
       if (err) jsonResponse(res, null, err.errors, false)
       jsonResponse(res, response)
     })
   })
-  .patch((req, res) => {
+  .patch([authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
     peopleModel.findOneAndUpdate({_id: req.body._id}, req.body).then((response) => {
       jsonResponse(res, response)
     })
   })
 
 router.route('/api/people/band')
-  .post((req, res) => {
+  .post([authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
     bandModel.findById(req.body.bandId, function (err, band) {
       band.lineUpIds.push(ObjectId(req.body.personId))
       band.save()
       jsonResponse(res, band)
     })
   })
-  .delete(async (req, res) => {
+  .delete([authJwt.verifyToken, authJwt.isAdmin], async (req, res) => {
     bandModel.findById(req.body.bandId, function (err, band) {
       const index = band.lineUpIds.indexOf(req.body.personId)
       band.lineUpIds.splice(index, 1)
@@ -76,7 +77,7 @@ router.route('/api/people/band')
   })
 
 router.route('/api/people/album')
-  .post((req, res) => {
+  .post([authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
     albumModel.findById(req.body.albumId, function (err, album) {
       if (err) jsonResponse(res, null, err.errors, false)
       album.lineUpIds.push(ObjectId(req.body.personId))
@@ -84,7 +85,7 @@ router.route('/api/people/album')
       jsonResponse(res, album)
     })
   })
-  .delete(async (req, res) => {
+  .delete([authJwt.verifyToken, authJwt.isAdmin], async (req, res) => {
     albumModel.findById(req.body.albumId, function (err, album) {
       const index = album.lineUpIds.indexOf(req.body.personId)
       album.lineUpIds.splice(index, 1)

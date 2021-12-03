@@ -7,42 +7,6 @@ const Role = db.role
 
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcryptjs")
-const mongoose = require('mongoose')
-const ObjectId = mongoose.Types.ObjectId
-
-exports.aboutMe = (req, res) => {
-  const token = req.headers['x-access-token']
-  if (!token) return jsonResponse(res, null, ['Не указан токен'], false, 401)
-
-  jwt.verify(token, config.secret, async function(err, decoded) {
-    if (err) return jsonResponse(res, null, 'Invalid token', false, 500)
-    const user = await User.aggregate([
-      {
-        $match: {
-          _id: ObjectId(decoded.id)
-        }
-      },
-      {
-        $lookup: {
-          from: 'role',
-          localField: 'roles',
-          foreignField: '_id',
-          as: 'roles'
-        }
-      },
-      {
-        $lookup: {
-          from: 'albums',
-          localField: 'likedAlbumIds.albumId',
-          foreignField: '_id',
-          as: 'likedAlbums'
-        }
-      },
-    ])
-    delete user[0].password
-    jsonResponse(res, user[0])
-  })
-}
 
 exports.signup = (req, res) => {
   const user = new User({

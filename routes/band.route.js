@@ -3,6 +3,7 @@ const {jsonResponse} = require('../utils')
 const express = require('express')
 const mongoose = require('mongoose')
 const bandModel = require('../models/band.model')
+const {authJwt} = require('../middlewares')
 const router = new express.Router()
 
 router.get('/api/band/name/:name', async (req, res) => {
@@ -97,13 +98,13 @@ router.route('/api/band')
       jsonResponse(res, response)
     }
   })
-  .post((req, res) => {
-    bandModel.create(req.body, function (err, response) {
+  .post([authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
+    bandModel.create(req.body, (err, response) => {
       if (err) jsonResponse(res, null, err.errors, false)
       jsonResponse(res, response)
     })
   })
-  .patch((req, res) => {
+  .patch([authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
     bandModel.findOneAndUpdate({_id: req.body._id}, req.body).then((response) => {
       jsonResponse(res, response)
     })

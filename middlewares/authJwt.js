@@ -27,22 +27,22 @@ isAdmin = (req, res, next) => {
       jsonResponse(res, null, err, false, 500)
     }
     Role.find(
-        {
-          _id: { $in: user.roles }
-        },
-        (err, roles) => {
-          if (err) {
-            jsonResponse(res, null, err, false, 500)
-          }
-
-          for (let i = 0; i < roles.length; i++) {
-            if (roles[i].name === "admin") {
-              next()
-              return
-            }
-          }
-          jsonResponse(res, null, 'Require Admin Role!', 403)
+      {
+        _id: { $in: user.roles }
+      },
+      (err, roles) => {
+        if (err) {
+          jsonResponse(res, null, err, false, 500)
         }
+        roles.forEach((r) => {
+          if (r.name === 'admin') {
+            next()
+            return
+          } else {
+            res.status(403).send({message: 'Admin role required!'})
+          }
+        })
+      }
     )
   })
 }
@@ -53,23 +53,23 @@ isModerator = (req, res, next) => {
       jsonResponse(res, null, err, false, 500)
     }
     Role.find(
-        {
-          _id: { $in: user.roles }
-        },
-        (err, roles) => {
-          if (err) {
-            jsonResponse(res, null, err, false, 500)
-          }
-
-          for (let i = 0; i < roles.length; i++) {
-            if (roles[i].name === "moderator") {
-              next()
-              return
-            }
-          }
-
-          jsonResponse(res, null, 'Require Moderator Role!', 403)
+      {
+        _id: { $in: user.roles }
+      },
+      (err, roles) => {
+        if (err) {
+          jsonResponse(res, null, err, false, 500)
         }
+
+        roles.forEach((r) => {
+          if (r.name === 'moderator') {
+            next()
+            return
+          } else {
+            res.status(403).send({message: 'Moderator role required!'})
+          }
+        })
+      }
     )
   })
 }

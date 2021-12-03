@@ -2,6 +2,7 @@ const {jsonResponse} = require('../utils')
 
 const express = require('express')
 const countryModel = require('../models/country.model')
+const {authJwt} = require('../middlewares')
 const router = new express.Router()
 
 router.route('/api/country')
@@ -17,13 +18,13 @@ router.route('/api/country')
       jsonResponse(res)
     }
   })
-  .post((req, res) => {
+  .post([authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
     countryModel.create(req.body, function (err, response) {
       if (err) jsonResponse(res, null, err.errors, false)
       jsonResponse(res, response)
     })
   })
-  .patch((req, res) => {
+  .patch([authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
     countryModel.findOneAndUpdate({_id: req.body._id}, req.body).then((response) => {
       jsonResponse(res, response)
     })

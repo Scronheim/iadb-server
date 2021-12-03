@@ -30,6 +30,9 @@ const userSchema = new mongoose.Schema({
         type: mongoose.SchemaTypes.Date
       }
     }
+  ],
+  listenListIds: [
+    mongoose.SchemaTypes.ObjectId,
   ]
 }, {
   versionKey: false,

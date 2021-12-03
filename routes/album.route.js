@@ -3,6 +3,7 @@ const {jsonResponse} = require('../utils')
 const express = require('express')
 const mongoose = require("mongoose")
 const albumModel = require("../models/album.model")
+const {authJwt} = require('../middlewares')
 const router = new express.Router()
 
 router.get('/api/album/id/:id', async (req, res) => {
@@ -70,13 +71,13 @@ router.route('/api/album')
       jsonResponse(res)
     }
   })
-  .post((req, res) => {
+  .post([authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
     albumModel.create(req.body, function (err, response) {
       if (err) jsonResponse(res, null, err.errors, false)
       jsonResponse(res, response)
     })
   })
-  .patch((req, res) => {
+  .patch([authJwt.verifyToken, authJwt.isAdmin], (req, res) => {
     albumModel.findOneAndUpdate({_id: req.body._id}, req.body).then((response) => {
       jsonResponse(res, response)
     })
